@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AK Event Planners – Crafting Unforgettable Moments</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --gold-dark: #8B6914;
+    --black: #0A0A08;
+    --deep: #111008;
+    --card: #141210;
+    --white: #F5F0E8;
+    --cream: #EDE8DC;
+    --muted: #8A8070;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
+
+  /* ══ NAV ══════════════════════════════════════════════════ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 60px;
+    background: rgba(10,10,8,0.97);
+    border-bottom: 1px solid rgba(201,168,76,0.14);
+    backdrop-filter: blur(16px);
+    transition: padding 0.3s;
+  }
+  nav.scrolled { padding: 11px 60px; }
+  .nav-logo { display: flex; align-items: center; gap: 13px; text-decoration: none; }
+  .nav-logo img { width: 44px; height: 44px; object-fit: contain; filter: invert(1) sepia(1) saturate(1.8) hue-rotate(5deg) brightness(0.82); }
+  .nav-brand { display: flex; flex-direction: column; }
+  .nav-name { font-family: 'Cormorant Garamond', serif; font-size: 1.12rem; font-weight: 600; letter-spacing: 0.14em; color: var(--gold); line-height: 1.2; }
+  .nav-sub  { font-size: 0.56rem; font-weight: 300; letter-spacing: 0.28em; color: var(--gold-light); text-transform: uppercase; }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { color: var(--white); text-decoration: none; font-size: 0.68rem; font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase; transition: color 0.25s; position: relative; padding-bottom: 3px; }
+  .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: var(--gold); transform: scaleX(0); transition: transform 0.3s; }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-cta { padding: 9px 26px; border: 1px solid var(--gold); color: var(--gold); font-size: 0.67rem; letter-spacing: 0.2em; text-transform: uppercase; font-family: 'Montserrat', sans-serif; font-weight: 400; cursor: pointer; background: transparent; transition: all 0.27s; text-decoration: none; }
+  .nav-cta:hover { background: var(--gold); color: var(--black); }
+
+  /* ══ HERO ═════════════════════════════════════════════════ */
+  #hero {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 130px 40px 90px; position: relative;
+    background:
+      linear-gradient(to bottom, rgba(10,10,8,0.5) 0%, rgba(10,10,8,0.9) 100%),
+      url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&q=80') center/cover no-repeat;
+  }
+  .hero-content { max-width: 860px; }
+  .hero-tag  { font-size: 0.6rem; letter-spacing: 0.45em; text-transform: uppercase; color: var(--gold); font-weight: 300; margin-bottom: 26px; opacity: 0; animation: fadeUp 0.9s 0.2s forwards; }
+  .hero-h1   { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.4rem, 8vw, 7.5rem); font-weight: 300; line-height: 1.05; color: var(--white); opacity: 0; animation: fadeUp 0.9s 0.4s forwards; }
+  .hero-h1 em { font-style: italic; color: var(--gold); display: block; }
+  .hero-sub  { font-size: 0.82rem; font-weight: 200; letter-spacing: 0.1em; color: var(--cream); margin: 26px auto 48px; max-width: 500px; line-height: 1.9; opacity: 0; animation: fadeUp 0.9s 0.6s forwards; }
+  .hero-btns { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.9s 0.8s forwards; }
+  .scroll-hint { position: absolute; bottom: 34px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 7px; animation: fadeIn 1s 1.2s both; }
+  .scroll-hint span { font-size: 0.54rem; letter-spacing: 0.3em; color: rgba(255,255,255,0.28); }
+  .scroll-line { width: 1px; height: 42px; background: linear-gradient(to bottom, var(--gold), transparent); animation: sline 2s infinite; }
+  @keyframes sline { 0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom} }
+
+  /* ══ BUTTONS ══════════════════════════════════════════════ */
+  .btn-g { padding: 15px 44px; background: var(--gold); color: var(--black); font-size: 0.69rem; letter-spacing: 0.22em; text-transform: uppercase; font-family: 'Montserrat', sans-serif; font-weight: 500; border: none; cursor: pointer; transition: all 0.27s; text-decoration: none; display: inline-block; }
+  .btn-g:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 10px 34px rgba(201,168,76,0.22); }
+  .btn-o { padding: 15px 44px; background: transparent; border: 1px solid rgba(201,168,76,0.5); color: var(--gold); font-size: 0.69rem; letter-spacing: 0.22em; text-transform: uppercase; font-family: 'Montserrat', sans-serif; font-weight: 300; cursor: pointer; transition: all 0.27s; text-decoration: none; display: inline-block; }
+  .btn-o:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); transform: translateY(-2px); }
+
+  .divider { width: 66px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 0 auto 17px; }
+
+  /* ══ STATS STRIP ══════════════════════════════════════════ */
+  .strip { background: linear-gradient(135deg, var(--gold-dark), var(--gold)); padding: 20px 60px; display: flex; align-items: center; justify-content: center; gap: 60px; flex-wrap: wrap; }
+  .strip-item { display: flex; align-items: center; gap: 12px; font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--black); font-weight: 500; }
+  .strip-item svg { width: 19px; height: 19px; flex-shrink: 0; }
+
+  /* ══ SECTION COMMONS ══════════════════════════════════════ */
+  .slabel { font-size: 0.56rem; letter-spacing: 0.44em; text-transform: uppercase; color: var(--gold); font-weight: 300; margin-bottom: 11px; }
+  .stitle { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3.1rem); font-weight: 300; line-height: 1.2; color: var(--white); margin-bottom: 14px; }
+  .stitle span { color: var(--gold); font-style: italic; }
+  .sdesc { font-size: 0.78rem; font-weight: 200; line-height: 1.9; color: var(--muted); }
+
+  /* ══ EVENTS ═══════════════════════════════════════════════ */
+  #events { padding: 100px 60px; background: var(--black); }
+  .ev-header { text-align: center; margin-bottom: 56px; }
+  .ev-header .sdesc { max-width: 460px; margin: 0 auto; }
+  .ev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; max-width: 1180px; margin: 0 auto; background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.07); }
+  .ev-card { background: var(--card); padding: 42px 32px; cursor: pointer; transition: background 0.27s, transform 0.27s; position: relative; overflow: hidden; }
+  .ev-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--gold); transform: scaleX(0); transition: transform 0.32s; }
+  .ev-card:hover { background: #1b1914; transform: translateY(-4px); }
+  .ev-card:hover::after { transform: scaleX(1); }
+  .ev-n  { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 300; color: rgba(201,168,76,0.09); line-height: 1; margin-bottom: 13px; transition: color 0.27s; }
+  .ev-card:hover .ev-n { color: rgba(201,168,76,0.2); }
+  .ev-ic { font-size: 1.7rem; display: block; margin-bottom: 12px; }
+  .ev-nm { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--white); margin-bottom: 9px; transition: color 0.27s; }
+  .ev-card:hover .ev-nm { color: var(--gold-light); }
+  .ev-ds { font-size: 0.74rem; line-height: 1.8; color: var(--muted); font-weight: 200; }
+  .ev-tg { display: inline-block; margin-top: 17px; padding: 5px 14px; border: 1px solid rgba(201,168,76,0.2); font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); transition: all 0.27s; }
+  .ev-card:hover .ev-tg { background: var(--gold); color: var(--black); border-color: var(--gold); }
+
+  /* ══ ABOUT ════════════════════════════════════════════════ */
+  #about-wrap { background: var(--deep); }
+  #about { padding: 100px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 86px; align-items: center; max-width: 1180px; margin: 0 auto; }
+  .about-logo-box { background: linear-gradient(135deg,#1c1a16,#0e0c09); border: 1px solid rgba(201,168,76,0.15); display: flex; align-items: center; justify-content: center; padding: 60px; position: relative; }
+  .about-logo-box::before { content:''; position:absolute; inset:18px; border:1px solid rgba(201,168,76,0.07); pointer-events:none; }
+  .about-logo-box img { width: 150px; filter: invert(1) sepia(1) saturate(1.8) hue-rotate(5deg) brightness(0.82); }
+  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-top: 20px; background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.07); }
+  .stat { background: var(--card); padding: 22px; transition: background 0.27s; }
+  .stat:hover { background: #1b1914; }
+  .stat-n { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 300; color: var(--gold); line-height: 1; }
+  .stat-l { font-size: 0.57rem; letter-spacing: 0.17em; text-transform: uppercase; color: var(--muted); margin-top: 5px; font-weight: 300; }
+
+  /* ══ TESTIMONIALS ═════════════════════════════════════════ */
+  #testimonials { padding: 100px 60px; background: var(--black); text-align: center; }
+  .test-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; max-width: 1180px; margin: 52px auto 0; }
+  .test-card { padding: 36px 28px; background: var(--card); border: 1px solid rgba(201,168,76,0.09); text-align: left; position: relative; transition: border-color 0.27s, transform 0.27s; }
+  .test-card:hover { border-color: rgba(201,168,76,0.26); transform: translateY(-4px); }
+  .test-card::before { content:'\201C'; font-family:'Cormorant Garamond',serif; font-size:5rem; line-height:0.8; color:rgba(201,168,76,0.1); position:absolute; top:15px; left:19px; }
+  .stars { color: var(--gold); font-size: 0.68rem; margin-bottom: 10px; }
+  .test-txt  { font-family:'Cormorant Garamond',serif; font-size:1rem; line-height:1.8; color:#B0A89A; font-style:italic; margin-bottom:17px; padding-top:22px; }
+  .test-name { font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); font-weight: 400; }
+  .test-ev   { font-size: 0.57rem; color: var(--muted); margin-top: 3px; }
+
+  /* ══ BOOKING FORM ═════════════════════════════════════════ */
+  #booking { padding: 100px 60px; background: var(--deep); }
+  .bk-inner { max-width: 800px; margin: 0 auto; }
+  .bk-head  { text-align: center; margin-bottom: 46px; }
+  .bk-head .sdesc { max-width: 470px; margin: 0 auto; }
+  .bform { background: var(--card); border: 1px solid rgba(201,168,76,0.17); padding: 52px 48px; position: relative; }
+  .bform::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+  .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .fg    { display: flex; flex-direction: column; gap: 7px; }
+  .fg.full { grid-column: 1/-1; }
+  .flabel { font-size: 0.56rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); font-weight: 400; }
+  .finput { background: rgba(255,255,255,0.025); border: 1px solid rgba(201,168,76,0.13); color: var(--white); padding: 13px 16px; font-family: 'Montserrat',sans-serif; font-size: 0.79rem; font-weight: 200; outline: none; width: 100%; transition: border-color 0.27s, background 0.27s; }
+  .finput::placeholder { color: rgba(255,255,255,0.16); }
+  .finput:focus { border-color: var(--gold); background: rgba(201,168,76,0.04); }
+  select.finput { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C9A84C' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+  select.finput option { background: #111; color: var(--white); }
+  textarea.finput { resize: vertical; min-height: 100px; }
+  .fsub { margin-top: 10px; width: 100%; padding: 17px; background: var(--gold); color: var(--black); font-family: 'Montserrat',sans-serif; font-size: 0.77rem; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; border: none; cursor: pointer; transition: all 0.27s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .fsub:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(201,168,76,0.22); }
+  .fsub:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+  .fmsg { margin-top: 16px; padding: 14px 18px; font-size: 0.73rem; display: none; text-align: center; line-height: 1.6; }
+  .fmsg.ok  { display: block; border: 1px solid rgba(201,168,76,0.32); background: rgba(201,168,76,0.07); color: var(--gold-light); }
+  .fmsg.err { display: block; border: 1px solid rgba(255,80,80,0.32); background: rgba(255,80,80,0.05); color: #ff9090; }
+
+  /* Spinner */
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.3); border-top-color: var(--black); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ══ FOOTER ═══════════════════════════════════════════════ */
+  footer { background: #060504; border-top: 1px solid rgba(201,168,76,0.1); padding: 62px 60px 34px; }
+  .ftop { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 52px; margin-bottom: 42px; }
+  .fdesc { font-size: 0.73rem; line-height: 1.8; color: var(--muted); font-weight: 200; max-width: 275px; margin-top: 14px; }
+  .fhead { font-size: 0.56rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; font-weight: 400; }
+  .flinks { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  .flinks a { color: var(--muted); text-decoration: none; font-size: 0.73rem; font-weight: 200; transition: color 0.25s; }
+  .flinks a:hover { color: var(--gold-light); }
+  .fcontact { display: flex; flex-direction: column; gap: 9px; }
+  .fci { font-size: 0.73rem; color: var(--muted); font-weight: 200; }
+  .fci span { color: var(--gold-light); }
+  .fbot { display: flex; justify-content: space-between; align-items: center; padding-top: 26px; border-top: 1px solid rgba(201,168,76,0.07); font-size: 0.6rem; color: var(--muted); flex-wrap: wrap; gap: 10px; }
+
+  /* ══ ANIMATIONS ═══════════════════════════════════════════ */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ══ RESPONSIVE ═══════════════════════════════════════════ */
+  @media (max-width: 900px) {
+    nav { padding: 13px 20px; }
+    nav.scrolled { padding: 10px 20px; }
+    .nav-links { display: none; }
+    #hero { padding: 100px 22px 70px; }
+    .strip { padding: 17px 20px; gap: 20px; }
+    .ev-grid { grid-template-columns: 1fr; }
+    #events { padding: 76px 22px; }
+    #about { grid-template-columns: 1fr; padding: 76px 22px; gap: 40px; }
+    #testimonials { padding: 76px 22px; }
+    .test-grid { grid-template-columns: 1fr; }
+    #booking { padding: 76px 22px; }
+    .bform { padding: 30px 20px; }
+    .fgrid { grid-template-columns: 1fr; }
+    footer { padding: 46px 20px 26px; }
+    .ftop { grid-template-columns: 1fr; gap: 30px; }
+    .fbot { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════════════ -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <img src="/logo.webp" alt="AK Logo">
+    <div class="nav-brand">
+      <span class="nav-name">AK Event Planners</span>
+      <span class="nav-sub">Crafting Unforgettable Moments</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#events">Events</a></li>
+    <li><a href="#about-wrap">About</a></li>
+    <li><a href="#testimonials">Stories</a></li>
+    <li><a href="#booking">Book Now</a></li>
+  </ul>
+  <a href="#booking" class="nav-cta">Book Event</a>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-content">
+    <p class="hero-tag">✦ Luxury Event Planning ✦</p>
+    <h1 class="hero-h1">Every Moment<br><em>Perfectly Crafted</em></h1>
+    <div class="divider"></div>
+    <p class="hero-sub">From intimate farewells to grand celebrations — AK Event Planners transforms your vision into a breathtaking reality you'll cherish forever.</p>
+    <div class="hero-btns">
+      <a href="#booking" class="btn-g">Plan Your Event</a>
+      <a href="#events"  class="btn-o">Explore Events</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ══ STRIP ═════════════════════════════════════════════════ -->
+<div class="strip">
+  <div class="strip-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    100+ Events Executed
+  </div>
+  <div class="strip-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    5‑Star Excellence
+  </div>
+  <div class="strip-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    500+ Happy Clients
+  </div>
+  <div class="strip-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Premium Venues
+  </div>
+</div>
+
+<!-- ══ EVENTS ════════════════════════════════════════════════ -->
+<section id="events">
+  <div class="ev-header reveal">
+    <p class="slabel">✦ Our Specialties ✦</p>
+    <h2 class="stitle">Events We <span>Celebrate</span></h2>
+    <div class="divider"></div>
+    <p class="sdesc">Each event is a unique masterpiece — designed with precision, passion, and an uncompromising eye for detail.</p>
+  </div>
+  <div class="ev-grid">
+    <div class="ev-card reveal" onclick="pickEvent('Farewell Party')">
+      <div class="ev-n">01</div><span class="ev-ic">🌟</span>
+      <h3 class="ev-nm">Farewell Party</h3>
+      <p class="ev-ds">A heartfelt send-off filled with memories, laughter, and elegance. We craft farewells that linger in hearts forever.</p>
+      <span class="ev-tg">Plan Farewell →</span>
+    </div>
+    <div class="ev-card reveal" onclick="pickEvent('Birthday Function')">
+      <div class="ev-n">02</div><span class="ev-ic">🎂</span>
+      <h3 class="ev-nm">Birthday Function</h3>
+      <p class="ev-ds">Celebrate another year with grandeur. From intimate gatherings to lavish soirées — every birthday is our masterpiece.</p>
+      <span class="ev-tg">Plan Birthday →</span>
+    </div>
+    <div class="ev-card reveal" onclick="pickEvent('Baby Shower')">
+      <div class="ev-n">03</div><span class="ev-ic">🍼</span>
+      <h3 class="ev-nm">Baby Shower</h3>
+      <p class="ev-ds">Welcome the newest arrival with a shower of love. Delicate, joyful, and exquisitely designed for the growing family.</p>
+      <span class="ev-tg">Plan Shower →</span>
+    </div>
+    <div class="ev-card reveal" onclick="pickEvent('Engagement')">
+      <div class="ev-n">04</div><span class="ev-ic">💍</span>
+      <h3 class="ev-nm">Engagement</h3>
+      <p class="ev-ds">The first chapter of your forever story. We create engagement ceremonies that radiate romance and sophistication.</p>
+      <span class="ev-tg">Plan Engagement →</span>
+    </div>
+    <div class="ev-card reveal" onclick="pickEvent('Surprise Event')">
+      <div class="ev-n">05</div><span class="ev-ic">🎉</span>
+      <h3 class="ev-nm">Surprise Event</h3>
+      <p class="ev-ds">The element of surprise, executed flawlessly. We orchestrate jaw-dropping moments that leave guests breathless.</p>
+      <span class="ev-tg">Plan Surprise →</span>
+    </div>
+    <div class="ev-card reveal" style="border-color:rgba(201,168,76,0.18)" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">
+      <div class="ev-n" style="color:rgba(201,168,76,0.26)">✦</div><span class="ev-ic">📋</span>
+      <h3 class="ev-nm" style="color:var(--gold-light)">Custom Event</h3>
+      <p class="ev-ds">Have something unique in mind? Tell us your vision and we'll craft an entirely bespoke experience just for you.</p>
+      <span class="ev-tg">Let's Talk →</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══════════════════════════════════════════════════ -->
+<div id="about-wrap">
+  <div id="about">
+    <div class="reveal">
+      <div class="about-logo-box">
+        <img src="/logo.webp" alt="AK Event Planners Logo">
+      </div>
+      <div class="about-stats">
+        <div class="stat reveal"><div class="stat-n">100+</div><div class="stat-l">Events Delivered</div></div>
+        <div class="stat reveal"><div class="stat-n">5★</div><div class="stat-l">Client Rating</div></div>
+        <div class="stat reveal"><div class="stat-n">5</div><div class="stat-l">Event Categories</div></div>
+        <div class="stat reveal"><div class="stat-n">∞</div><div class="stat-l">Memories Created</div></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <p class="slabel">✦ Our Story ✦</p>
+      <h2 class="stitle">More Than Planning —<br>We <span>Create Magic</span></h2>
+      <div class="divider" style="margin-left:0"></div>
+      <p class="sdesc">AK Event Planners was born from a single belief: every milestone deserves to be celebrated with extraordinary care. From the first consultation to the final bow, our team brings unparalleled creativity, meticulous attention to detail, and a genuine passion for creating moments that last a lifetime.<br><br>We don't just plan events — we sculpt experiences, weave emotions, and build memories that you and your loved ones will treasure forever.</p>
+      <br><br>
+      <a href="#booking" class="btn-g">Start Planning Today</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TESTIMONIALS ═══════════════════════════════════════════ -->
+<section id="testimonials">
+  <div class="reveal">
+    <p class="slabel">✦ Client Stories ✦</p>
+    <h2 class="stitle">What Our <span>Clients Say</span></h2>
+    <div class="divider"></div>
+  </div>
+  <div class="test-grid">
+    <div class="test-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="test-txt">"AK Event Planners turned our daughter's birthday into an absolute fairytale. Every detail was perfect — I'm still getting compliments months later!"</p>
+      <div class="test-name">Priya Sharma</div><div class="test-ev">Birthday Function</div>
+    </div>
+    <div class="test-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="test-txt">"Our engagement ceremony was beyond our wildest dreams. The team understood exactly what we wanted and delivered something truly magical."</p>
+      <div class="test-name">Rahul &amp; Sneha</div><div class="test-ev">Engagement Ceremony</div>
+    </div>
+    <div class="test-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="test-txt">"The surprise party they planned for my husband was flawlessly executed. He was completely shocked and absolutely loved every moment!"</p>
+      <div class="test-name">Meera Kapoor</div><div class="test-ev">Surprise Event</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BOOKING ════════════════════════════════════════════════ -->
+<section id="booking">
+  <div class="bk-inner">
+    <div class="bk-head reveal">
+      <p class="slabel">✦ Reserve Your Date ✦</p>
+      <h2 class="stitle">Book Your <span>Dream Event</span></h2>
+      <div class="divider"></div>
+      <p class="sdesc">Fill in your details below and our event specialist will reach out within 24 hours. A confirmation email will be sent to you instantly.</p>
+    </div>
+    <div class="bform reveal">
+      <div class="fgrid">
+        <div class="fg">
+          <label class="flabel">Full Name *</label>
+          <input type="text" class="finput" id="f-name" placeholder="Your full name">
+        </div>
+        <div class="fg">
+          <label class="flabel">Phone Number *</label>
+          <input type="tel" class="finput" id="f-phone" placeholder="+91 00000 00000">
+        </div>
+        <div class="fg">
+          <label class="flabel">Email Address *</label>
+          <input type="email" class="finput" id="f-email" placeholder="your@email.com">
+        </div>
+        <div class="fg">
+          <label class="flabel">Type of Event *</label>
+          <select class="finput" id="f-event">
+            <option value="" disabled selected>Select event type</option>
+            <option value="Farewell Party">🌟 Farewell Party</option>
+            <option value="Birthday Function">🎂 Birthday Function</option>
+            <option value="Baby Shower">🍼 Baby Shower</option>
+            <option value="Engagement">💍 Engagement</option>
+            <option value="Surprise Event">🎉 Surprise Event</option>
+            <option value="Custom Event">📋 Custom / Other</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="flabel">Preferred Event Date</label>
+          <input type="date" class="finput" id="f-date">
+        </div>
+        <div class="fg">
+          <label class="flabel">Expected Guest Count</label>
+          <input type="number" class="finput" id="f-guests" placeholder="e.g. 50" min="1">
+        </div>
+        <div class="fg full">
+          <label class="flabel">Your Vision / Special Requests</label>
+          <textarea class="finput" id="f-msg" placeholder="Tell us about your dream event — themes, preferences, any special requests..."></textarea>
+        </div>
+      </div>
+      <button class="fsub" id="fBtn" onclick="sendBooking()">
+        <span id="fBtnText">✦ &nbsp; Reserve My Event &nbsp; ✦</span>
+      </button>
+      <div class="fmsg" id="fNotice"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ════════════════════════════════════════════════ -->
+<footer>
+  <div class="ftop">
+    <div>
+      <a href="#" class="nav-logo">
+        <img src="/logo.webp" alt="AK Logo" style="width:38px">
+        <div class="nav-brand">
+          <span class="nav-name">AK Event Planners</span>
+          <span class="nav-sub">Crafting Unforgettable Moments</span>
+        </div>
+      </a>
+      <p class="fdesc">Luxury event planning for life's most precious milestones. Every detail, perfectly orchestrated.</p>
+    </div>
+    <div>
+      <p class="fhead">Navigation</p>
+      <ul class="flinks">
+        <li><a href="#events">Our Events</a></li>
+        <li><a href="#about-wrap">About Us</a></li>
+        <li><a href="#testimonials">Client Stories</a></li>
+        <li><a href="#booking">Book an Event</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="fhead">Contact</p>
+      <div class="fcontact">
+        <p class="fci">📧 <span>kartheebanaravindhan@gmail.com</span></p>
+        <p class="fci">📱 <span>+91 98765 43210</span></p>
+        <p class="fci">📍 <span>Your City, India</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="fbot">
+    <span>© 2025 AK Event Planners. All rights reserved.</span>
+    <span style="color:var(--gold)">✦ Crafting Unforgettable Moments ✦</span>
+  </div>
+</footer>
+
+<script>
+// ── Nav scroll ─────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ── Scroll reveal ──────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 75);
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// ── Pick event from card ───────────────────────────────────
+function pickEvent(name) {
+  document.getElementById('f-event').value = name;
+  document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── Send Booking → POST /api/book ──────────────────────────
+async function sendBooking() {
+  const notice  = document.getElementById('fNotice');
+  const btn     = document.getElementById('fBtn');
+  const btnText = document.getElementById('fBtnText');
+
+  const name      = document.getElementById('f-name').value.trim();
+  const phone     = document.getElementById('f-phone').value.trim();
+  const email     = document.getElementById('f-email').value.trim();
+  const eventType = document.getElementById('f-event').value;
+  const eventDate = document.getElementById('f-date').value;
+  const guestCount= document.getElementById('f-guests').value;
+  const message   = document.getElementById('f-msg').value.trim();
+
+  // Reset
+  notice.className = 'fmsg';
+  notice.style.display = 'none';
+
+  // Client-side validation
+  if (!name || !phone || !email || !eventType) {
+    notice.className = 'fmsg err';
+    notice.textContent = '✦ Please fill in all required fields — Name, Phone, Email & Event Type.';
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    notice.className = 'fmsg err';
+    notice.textContent = '✦ Please enter a valid email address.';
+    return;
+  }
+
+  // Loading state
+  btn.disabled = true;
+  btnText.innerHTML = '<span class="spinner"></span> &nbsp; Sending your booking...';
+
+  try {
+    const res  = await fetch('/api/book', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone, email, eventType, eventDate, guestCount, message })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      notice.className = 'fmsg ok';
+      notice.innerHTML = `✦ &nbsp; ${data.message} &nbsp; ✦<br><small style="opacity:0.7;font-size:0.68rem">Check your inbox for a confirmation email.</small>`;
+      // Reset form
+      ['f-name','f-phone','f-email','f-date','f-guests','f-msg'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('f-event').value = '';
+      btnText.textContent = '✦  Booking Sent!  ✦';
+      setTimeout(() => { btnText.textContent = '✦  Reserve My Event  ✦'; btn.disabled = false; }, 5000);
+    } else {
+      throw new Error(data.message || 'Booking failed.');
+    }
+  } catch (err) {
+    notice.className = 'fmsg err';
+    notice.textContent = `✦ ${err.message}`;
+    btnText.textContent = '✦  Reserve My Event  ✦';
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
